@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurants - FoodieHive</title>
+    <!-- Same CSS & Fonts as MAIN.html -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Open Sans', sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        /* Layout Structure */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Side Navigation - Desktop */
+        .side-nav {
+            width: 250px;
+            background-color: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 90;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+        
+        .logo h1 {
+            color: #e74c3c;
+            font-size: 22px;
+            font-weight: 700;
+            margin-left: 10px;
+            font-family: 'Lato', sans-serif;
+        }
+        
+        .logo-icon {
+            color: #e74c3c;
+            font-size: 24px;
+        }
+        
+        .nav-links {
+            list-style: none;
+            padding: 0 20px;
+        }
+        
+        .nav-links li {
+            margin-bottom: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-links li::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(231, 76, 60, 0.1), transparent);
+            transition: 0.5s;
+        }
+        
+        .nav-links li:hover::before {
+            left: 100%;
+        }
+        
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #555;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 12px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background-color: #fdeaea;
+            color: #e74c3c;
+            transform: translateX(5px);
+        }
+        
+        .nav-links i {
+            width: 24px;
+            margin-right: 10px;
+            text-align: center;
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-links a:hover i {
+            transform: scale(1.2);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            transition: margin 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 80;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .search-bar {
+            position: relative;
+            width: 300px;
+        }
+        
+        .search-bar input {
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            width: 100%;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-bar input:focus {
+            outline: none;
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+            transition: color 0.3s ease;
+        }
+        
+        .search-bar:focus-within .search-icon {
+            color: #e74c3c;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .user-profile:hover .user-avatar {
+            transform: scale(1.1);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+            border: 2px solid #e74c3c;
+            transition: transform 0.3s ease;
+        }
+        
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            padding-bottom: 60px; /* Space for mobile nav */
+        }
+        
+        /* Hero Section */
+        .hero {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .hero h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            animation: fadeInUp 1s ease;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            max-width: 600px;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease 0.2s forwards;
+            opacity: 0;
+        }
+        
+        .hero-btn {
+            padding: 12px 30px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease 0.4s forwards;
+            opacity: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-100%) skewX(-30deg);
+            transition: transform 0.4s ease;
+        }
+        
+        .hero-btn:hover::after {
+            transform: translateX(300%) skewX(-30deg);
+        }
+        
+        /* Sections */
+        .section-container {
+            padding: 0 30px 40px;
+        }
+        
+        .section-title {
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: #333;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: #e74c3c;
+        }
+        
+        /* Recipe Cards */
+        .recipes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .recipe-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .recipe-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .recipe-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .recipe-card:hover .recipe-img {
+            transform: scale(1.05);
+        }
+        
+        .recipe-info {
+            padding: 20px;
+        }
+        
+        .recipe-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .recipe-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .recipe-price {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        
+        .recipe-desc {
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .recipe-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .action-btn {
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .view-btn {
+            background-color: #f1f1f1;
+            color: #333;
+            border: none;
+        }
+        
+        .view-btn:hover {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .save-btn {
+            background-color: transparent;
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+        }
+        
+        .save-btn:hover {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        /* Restaurant Cards */
+        .restaurants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .restaurant-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .restaurant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .restaurant-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .restaurant-card:hover .restaurant-img {
+            transform: scale(1.05);
+        }
+        
+        .restaurant-info {
+            padding: 20px;
+        }
+        
+        .restaurant-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .restaurant-location {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .restaurant-location i {
+            margin-right: 5px;
+        }
+        
+        .restaurant-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .stars {
+            color: #f1c40f;
+            margin-right: 10px;
+        }
+        
+        .rating-count {
+            color: #777;
+            font-size: 14px;
+        }
+        
+        .restaurant-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        /* Bottom Navigation - Mobile */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .bottom-nav-links {
+            display: flex;
+            list-style: none;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+        
+        .bottom-nav-links li {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        
+        .bottom-nav-links a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #555;
+            font-size: 12px;
+            padding: 10px 5px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .bottom-nav-links a.active {
+            color: #e74c3c;
+        }
+        
+        .bottom-nav-links a::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background-color: #fdeaea;
+            border-radius: 50%;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .bottom-nav-links a:hover::before,
+        .bottom-nav-links a.active::before {
+            opacity: 1;
+            top: -20px;
+        }
+        
+        .bottom-nav-links i {
+            font-size: 20px;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+        
+        .bottom-nav-links a:hover i,
+        .bottom-nav-links a.active i {
+            transform: translateY(-5px);
+        }
+        
+        .bottom-nav-links span {
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+        
+        .bottom-nav-links a:hover span,
+        .bottom-nav-links a.active span {
+            transform: translateY(2px);
+        }
+        
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #e74c3c;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+            z-index: 101;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.5);
+        }
+        
+        .mobile-menu-toggle i {
+            transition: transform 0.3s ease;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Pulse animation for active nav item */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(231, 76, 60, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .side-nav {
+                transform: translateX(-100%);
+                z-index: 100;
+            }
+            
+            .side-nav.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .bottom-nav {
+                display: block;
+            }
+            
+            .mobile-menu-toggle {
+                display: flex;
+            }
+            
+            .hero {
+                height: 300px;
+            }
+            
+            .hero h2 {
+                font-size: 32px;
+            }
+            
+            .hero p {
+                font-size: 16px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .search-bar {
+                width: 200px;
+            }
+            
+            .hero {
+                height: 250px;
+            }
+            
+            .hero h2 {
+                font-size: 28px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .header {
+                padding: 15px;
+            }
+            
+            .search-bar {
+                width: 150px;
+            }
+            
+            .user-avatar {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .section-container {
+                padding: 0 15px 30px;
+            }
+            
+            .section-title {
+                font-size: 24px;
+            }
+            
+            .bottom-nav-links a {
+                font-size: 10px;
+                padding: 8px 3px;
+            }
+            
+            .bottom-nav-links i {
+                font-size: 18px;
+            }
+            
+            .mobile-menu-toggle {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+                bottom: 60px;
+            }
+        }
+    </style>
+    <style>
+        /* PASTE THE ENTIRE CSS FROM MAIN.html HERE */
+        /* Then add these restaurant-specific styles: */
+        
+        .restaurants-container {
+            padding: 20px;
+            margin-left: 250px;
+        }
+        
+        .location-filter {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        
+        .location-select {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .distance-select {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 992px) {
+            .restaurants-container {
+                margin-left: 0;
+                padding-bottom: 70px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .location-filter {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Side Navigation - Desktop -->
+    <nav class="side-nav" id="sideNav">
+        <div class="logo">
+            <i class="fas fa-utensils logo-icon"></i>
+            <h1>FoodieHive</h1>
+        </div>
+        
+        <ul class="nav-links">
+            <li><a href="MAIN.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="R1.html"><i class="fas fa-utensils"></i> Recipes</a></li>
+            <li><a href="blog.html"><i class="fas fa-book-open"></i> Blogs</a></li>
+            <li><a href="RESTAURANT.html" class="active"><i class="fas fa-store"></i> Restaurants</a></li>
+            <li><a href="community.html"><i class="fas fa-users"></i> Commmunity</a></li>
+            
+           
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="search-bar">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" placeholder="Search restaurants...">
+            </div>
+            
+            <div class="user-profile">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="user-avatar">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </header>
+
+        <!-- Restaurants Content -->
+        <div class="restaurants-container">
+            <div class="location-filter">
+                <select class="location-select">
+                    <option>New York, NY</option>
+                    <option>Los Angeles, CA</option>
+                    <option>Chicago, IL</option>
+                    <option>Houston, TX</option>
+                </select>
+                
+                <select class="distance-select">
+                    <option>Within 1 mile</option>
+                    <option>Within 3 miles</option>
+                    <option selected>Within 5 miles</option>
+                    <option>Within 10 miles</option>
+                </select>
+            </div>
+            
+            <!-- Restaurant cards will be loaded from MAIN.html's structure -->
+            <div class="restaurants-grid">
+                <!-- Restaurant Card 1 -->
+                <div class="restaurant-card">
+                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Restaurant" class="restaurant-img">
+                    <div class="restaurant-info">
+                        <h3 class="restaurant-title">The Rustic Table</h3>
+                        <p class="restaurant-location"><i class="fas fa-map-marker-alt"></i> 1.2 miles away</p>
+                        <div class="restaurant-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="rating-count">(128 reviews)</span>
+                        </div>
+                        <div class="restaurant-actions">
+                            <button class="action-btn view-btn">View Menu</button>
+                            <button class="action-btn save-btn">Bookmark</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Restaurant Card 2 -->
+                <div class="restaurant-card">
+                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Restaurant" class="restaurant-img">
+                    <div class="restaurant-info">
+                        <h3 class="restaurant-title">Sushi Haven</h3>
+                        <p class="restaurant-location"><i class="fas fa-map-marker-alt"></i> 0.8 miles away</p>
+                        <div class="restaurant-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="rating-count">(245 reviews)</span>
+                        </div>
+                        <div class="restaurant-actions">
+                            <button class="action-btn view-btn">View Menu</button>
+                            <button class="action-btn save-btn">Bookmark</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Restaurant Card 3 -->
+                <div class="restaurant-card">
+                    <img src="https://images.unsplash.com/photo-1580913428735-bd3c269d6a82?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Restaurant" class="restaurant-img">
+                    <div class="restaurant-info">
+                        <h3 class="restaurant-title">La Pasta Fresca</h3>
+                        <p class="restaurant-location"><i class="fas fa-map-marker-alt"></i> 2.1 miles away</p>
+                        <div class="restaurant-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                            <span class="rating-count">(187 reviews)</span>
+                        </div>
+                        <div class="restaurant-actions">
+                            <button class="action-btn view-btn">View Menu</button>
+                            <button class="action-btn save-btn">Bookmark</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation - Mobile -->
+    <nav class="bottom-nav">
+        <ul class="bottom-nav-links">
+            <li><a href="MAIN.html"><i class="fas fa-home"></i> <span>Home</span></a></li>
+            <li><a href="R1.html"><i class="fas fa-utensils"></i> <span>Recipes</span></a></li>
+            <li><a href="#"><i class="fas fa-search"></i> <span>Search</span></a></li>
+            <li><a href="#"><i class="fas fa-heart"></i> <span>Saved</span></a></li>
+            <li><a href="profile.html"><i class="fas fa-user"></i> <span>Profile</span></a></li>
+        </ul>
+    </nav>
+
+    <!-- Mobile Menu Toggle Button -->
+    <div class="mobile-menu-toggle" id="mobileMenuToggle">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sideNav = document.getElementById('sideNav');
+        
+        mobileMenuToggle.addEventListener('click', () => {
+            sideNav.classList.toggle('active');
+            
+            // Change icon
+            const icon = mobileMenuToggle.querySelector('i');
+            if (sideNav.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+    </script>
+</body>
+</html>

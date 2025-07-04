@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - FoodieHive</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Open Sans', sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        /* Layout Structure */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Side Navigation - Desktop */
+        .side-nav {
+            width: 250px;
+            background-color: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 90;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+        
+        .logo h1 {
+            color: #e74c3c;
+            font-size: 22px;
+            font-weight: 700;
+            margin-left: 10px;
+            font-family: 'Lato', sans-serif;
+        }
+        
+        .logo-icon {
+            color: #e74c3c;
+            font-size: 24px;
+        }
+        
+        .nav-links {
+            list-style: none;
+            padding: 0 20px;
+        }
+        
+        .nav-links li {
+            margin-bottom: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-links li::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(231, 76, 60, 0.1), transparent);
+            transition: 0.5s;
+        }
+        
+        .nav-links li:hover::before {
+            left: 100%;
+        }
+        
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #555;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 12px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background-color: #fdeaea;
+            color: #e74c3c;
+            transform: translateX(5px);
+        }
+        
+        .nav-links i {
+            width: 24px;
+            margin-right: 10px;
+            text-align: center;
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-links a:hover i {
+            transform: scale(1.2);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            transition: margin 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 80;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .search-bar {
+            position: relative;
+            width: 300px;
+        }
+        
+        .search-bar input {
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            width: 100%;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-bar input:focus {
+            outline: none;
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+            transition: color 0.3s ease;
+        }
+        
+        .search-bar:focus-within .search-icon {
+            color: #e74c3c;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .user-profile:hover .user-avatar {
+            transform: scale(1.1);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+            border: 2px solid #e74c3c;
+            transition: transform 0.3s ease;
+        }
+        
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            padding: 30px;
+            padding-bottom: 60px; /* Space for mobile nav */
+        }
+        
+        /* Settings Page Styles */
+        .page-title {
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: #333;
+            position: relative;
+            padding-bottom: 10px;
+            font-family: 'Lato', sans-serif;
+        }
+        
+        .page-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: #e74c3c;
+        }
+        
+        /* Settings Sections */
+        .settings-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            padding: 15px 20px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .settings-list {
+            list-style: none;
+        }
+        
+        .settings-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+        
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+        
+        .settings-item:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .item-label {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .item-value {
+            color: #777;
+            font-size: 14px;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #e74c3c;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .arrow-icon {
+            color: #999;
+        }
+        
+        /* Account Section */
+        .account-info {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .account-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 20px;
+            border: 3px solid #e74c3c;
+        }
+        
+        .account-details h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .account-details p {
+            color: #777;
+            font-size: 14px;
+        }
+        
+        .edit-btn {
+            padding: 8px 15px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .edit-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        /* Danger Zone */
+        .danger-zone .section-header {
+            background-color: #fdeaea;
+            color: #e74c3c;
+        }
+        
+        .danger-btn {
+            padding: 8px 15px;
+            background-color: transparent;
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .danger-btn:hover {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        /* Bottom Navigation - Mobile */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .bottom-nav-links {
+            display: flex;
+            list-style: none;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+        
+        .bottom-nav-links li {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        
+        .bottom-nav-links a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #555;
+            font-size: 12px;
+            padding: 10px 5px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .bottom-nav-links a.active {
+            color: #e74c3c;
+        }
+        
+        .bottom-nav-links a::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background-color: #fdeaea;
+            border-radius: 50%;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .bottom-nav-links a:hover::before,
+        .bottom-nav-links a.active::before {
+            opacity: 1;
+            top: -20px;
+        }
+        
+        .bottom-nav-links i {
+            font-size: 20px;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+        
+        .bottom-nav-links a:hover i,
+        .bottom-nav-links a.active i {
+            transform: translateY(-5px);
+        }
+        
+        .bottom-nav-links span {
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+        
+        .bottom-nav-links a:hover span,
+        .bottom-nav-links a.active span {
+            transform: translateY(2px);
+        }
+        
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #e74c3c;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+            z-index: 101;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.5);
+        }
+        
+        .mobile-menu-toggle i {
+            transition: transform 0.3s ease;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .side-nav {
+                transform: translateX(-100%);
+                z-index: 100;
+            }
+            
+            .side-nav.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .bottom-nav {
+                display: block;
+            }
+            
+            .mobile-menu-toggle {
+                display: flex;
+            }
+            
+            .page-title {
+                font-size: 28px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .search-bar {
+                width: 200px;
+            }
+            
+            .content-area {
+                padding: 20px;
+            }
+            
+            .account-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .account-avatar {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .header {
+                padding: 15px;
+            }
+            
+            .search-bar {
+                width: 150px;
+            }
+            
+            .user-avatar {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .content-area {
+                padding: 15px;
+            }
+            
+            .page-title {
+                font-size: 24px;
+            }
+            
+            .settings-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .item-value, .toggle-switch {
+                margin-top: 8px;
+            }
+            
+            .bottom-nav-links a {
+                font-size: 10px;
+                padding: 8px 3px;
+            }
+            
+            .bottom-nav-links i {
+                font-size: 18px;
+            }
+            
+            .mobile-menu-toggle {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+                bottom: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Side Navigation - Desktop -->
+        <nav class="side-nav" id="sideNav">
+            <div class="logo">
+                <i class="fas fa-utensils logo-icon"></i>
+                <h1>FoodieHive</h1>
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="MAIN.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="R1.html"><i class="fas fa-utensils"></i> Recipes</a></li>
+                <li><a href="blog.html"><i class="fas fa-book-open"></i> Blogs</a></li>
+                <li><a href="RESTAURANT.html"><i class="fas fa-store"></i> Restaurants</a></li>
+                <li><a href="community.html"><i class="fas fa-users"></i> Commmunity</a></li>
+            
+              
+            </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="search-bar">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" placeholder="Search settings...">
+                </div>
+                
+                <div class="user-profile">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="user-avatar">
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <h1 class="page-title">Settings</h1>
+                
+                <!-- Account Section -->
+                <div class="settings-section">
+                    <div class="account-info">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Profile" class="account-avatar">
+                        <div class="account-details">
+                            <h3>Alex Johnson</h3>
+                            <p>@alexfoodie</p>
+                            <button class="edit-btn">Edit Profile</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Account Settings -->
+                <div class="settings-section">
+                    <div class="section-header">Account Settings</div>
+                    <ul class="settings-list">
+                        <li class="settings-item">
+                            <span class="item-label">Email</span>
+                            <span class="item-value">alex.johnson@example.com</span>
+                        </li>
+                        <li class="settings-item">
+                            <span class="item-label">Phone Number</span>
+                            <span class="item-value">+1 (555) 123-4567</span>
+                        </li>
+                        <li class="settings-item">
+                            <span class="item-label">Change Password</span>
+                            <i class="fas fa-chevron-right arrow-icon"></i>
+                        </li>
+                        <li class="settings-item">
+                            <span class="item-label">Two-Factor Authentication</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Notifications -->
+                <div class="settings-section">
+                    <div class="section-header">Notifications</div>
+                    <ul class="settings-list">
+                        <li class="settings-item">
+                            <span class="item-label">Recipe Notifications</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </li>
+                        <li class="settings-item">
+                            <span class="item-label">Restaurant Updates</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </li>
+                        <li class="settings-item">
+                            <span class="item-label">Blog Posts</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </li>
+                        <li class="settings-item">
+                            <span class="item-label">Marketing Emails</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Preferences -->
+                <div class="settings-section">
+                    <div class="section-header">Preferences</div>
+                    <ul class="settings-list">
+                        <li class="settings-item">
+                            <span class="item-label">Preferred Cuisine</span>
+                            <span class="item-value">Italian, Mexican</span>
+                        </li>
+                        <li class="settings-item">
+                            <span class="item-label">Dietary Restrictions</span>
+                            <span class="item-value">None</span>
+                        </li>
+                        <li class="settings-item">
+                            <span class="item-label">Measurement Units</span>
+                            <span class="item-value">Imperial (lbs, oz)</span>
+                        </li>
+                        <li class="settings-item">
+                            <span class="item-label">Dark Mode</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Danger Zone -->
+                <div class="settings-section danger-zone">
+                    <div class="section-header">Danger Zone</div>
+                    <ul class="settings-list">
+                        <li class="settings-item">
+                            <span class="item-label">Delete Account</span>
+                            <button class="danger-btn">Delete</button>
+                        </li>
+                        <li class="settings-item">
+                            <span class="item-label">Logout All Devices</span>
+                            <button class="danger-btn">Logout Everywhere</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation - Mobile -->
+    <nav class="bottom-nav">
+        <ul class="bottom-nav-links">
+            <li><a href="MAIN.html"><i class="fas fa-home"></i> <span>Home</span></a></li>
+            <li><a href="R1.html"><i class="fas fa-utensils"></i> <span>Recipes</span></a></li>
+            <li><a href="#"><i class="fas fa-search"></i> <span>Search</span></a></li>
+            <li><a href="#"><i class="fas fa-heart"></i> <span>Saved</span></a></li>
+            <li><a href="profile.html"><i class="fas fa-user"></i> <span>Profile</span></a></li>
+        </ul>
+    </nav>
+
+    <!-- Mobile Menu Toggle Button -->
+    <div class="mobile-menu-toggle" id="mobileMenuToggle">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sideNav = document.getElementById('sideNav');
+        
+        mobileMenuToggle.addEventListener('click', () => {
+            sideNav.classList.toggle('active');
+            
+            // Change icon
+            const icon = mobileMenuToggle.querySelector('i');
+            if (sideNav.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+                mobileMenuToggle.style.transform = 'rotate(90deg)';
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+                mobileMenuToggle.style.transform = 'rotate(0)';
+            }
+        });
+        
+        // Close side nav when clicking on a link (mobile only)
+        document.querySelectorAll('.nav-links a, .bottom-nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 992) {
+                    sideNav.classList.remove('active');
+                    const icon = mobileMenuToggle.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                    mobileMenuToggle.style.transform = 'rotate(0)';
+                }
+                
+                // Update active state for bottom nav
+                if (link.classList.contains('bottom-nav-link')) {
+                    document.querySelectorAll('.bottom-nav-links a').forEach(navLink => {
+                        navLink.classList.remove('active');
+                    });
+                    link.classList.add('active');
+                }
+            });
+        });
+        
+        // User dropdown functionality would go here
+        const userProfile = document.querySelector('.user-profile');
+        userProfile.addEventListener('click', () => {
+            // In a real app, this would toggle a dropdown menu
+            console.log('User profile clicked - would show dropdown menu');
+        });
+        
+        // Toggle switch functionality
+        const toggleSwitches = document.querySelectorAll('.toggle-switch input');
+        
+        toggleSwitches.forEach(switchEl => {
+            switchEl.addEventListener('change', function() {
+                const settingName = this.closest('.settings-item').querySelector('.item-label').textContent;
+                console.log(`${settingName} is now ${this.checked ? 'enabled' : 'disabled'}`);
+            });
+        });
+        
+        // Danger button confirmations
+        const dangerButtons = document.querySelectorAll('.danger-btn');
+        
+        dangerButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const actionName = this.closest('.settings-item').querySelector('.item-label').textContent;
+                if (confirm(`Are you sure you want to ${actionName}? This action cannot be undone.`)) {
+                    console.log(`${actionName} confirmed`);
+                    // In a real app, this would trigger the action
+                }
+            });
+        });
+        
+        // Highlight active nav item based on current page
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPage = window.location.pathname.split('/').pop() || 'settings.html';
+            
+            // Update desktop nav active state
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.classList.remove('active');
+                const linkPage = link.getAttribute('href').split('/').pop();
+                if (linkPage === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Update mobile nav active state
+            document.querySelectorAll('.bottom-nav-links a').forEach(link => {
+                link.classList.remove('active');
+                const linkPage = link.getAttribute('href').split('/').pop();
+                if (linkPage === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
